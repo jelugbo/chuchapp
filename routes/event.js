@@ -12,35 +12,40 @@ exports.index = function(req, res) {
 
 
 exports.create = function(req, res) {
-      
-  var event_event_name = req.body.event_event_name; // First name of event.
-  var event_venue = req.body.event_venue; // Last name of the event
-  var event_date = req.body.event_date; 
-  var event_imageURl = req.body.event_imageURl; 
-  var event_description1 = req.body.event_description1;
-  var event_description2 = req.body.event_description2;
-  var event_description3 = req.body.event_description3;
-  var event_enquiryContact = req.body.event_enquiryContact;
-  var event_time = req.body.event_time;
-  // var event_material_image = req.body.event_material_image;
-  // var event_material_video = req.body.event_material_video;
+  
 
-// event.findOne({ date: { $regex: new RegExp(event_date, "i") } },
-  event.findOne({ date: event_date },
-function(err, doc) { // Using RegEx - search is case insensitive
-    if(!err && !doc) {
-      
+      var EventEventName = req.body.EventEventName; 
+      var EventVenue = req.body.EventVenue; 
+      var EventDate = req.body.EventDate; 
+      var myDate = new Date(EventDate);
+      var EventDateDay = myDate.getDate();
+      var EventDateMonth =myDate.getMonth()+ 1;
+      var EventDateYear =myDate.getFullYear();
+      var EventImageUrl = req.body.EventImageUrl; 
+      var EventDescription1 = req.body.EventDescription1;
+      var EventDescription2 = req.body.EventDescription2;
+      var EventDescription3 = req.body.EventDescription3;
+      var EventEnquiryContact = req.body.EventEnquiryContact;
+      // var EventTime = req.body.EventTime;
+
+      console.log ( 'Event day is ' + EventDateDay);
+      console.log ( 'Event Month is ' + EventDateMonth);
+      console.log ( 'Event Year is ' + EventDateYear);
+   
+
       var newevent = new event();
       
-      newevent.event_name = event_event_name;
-      newevent.venue = event_venue;
-      newevent.date = event_date;
-      newevent.imageURl = event_imageURl;
-      newevent.time = event_time;
-      newevent.description1 = event_description1;
-      newevent.description2 = event_description2;
-      newevent.description3 = event_description3;
-      newevent.enquiryContact = event_enquiryContact;
+      newevent.eventName = EventEventName;
+      newevent.venue = EventVenue;
+      newevent.date = EventDate;
+      newevent.imageURl = EventImageUrl;
+      newevent.dateDay = EventDateDay;
+      newevent.dateMonth = EventDateMonth;
+      newevent.dateYear = EventDateYear;
+      newevent.description1 = EventDescription1;
+      newevent.description2 = EventDescription2;
+      newevent.description3 = EventDescription3;
+      newevent.enquiryContact = EventEnquiryContact;
       
       // newevent.material.image = event_material_image;
       // newevent.material.video = event_material_video;
@@ -48,27 +53,16 @@ function(err, doc) { // Using RegEx - search is case insensitive
       newevent.save(function(err) {
       
         if(!err) {
-          res.json(201, {message: "event created with date : " +
-newevent.date });
+            res.json(201, {message: 'event created with date : ' + newevent.date });
         } else {
-          res.json(500, {message: "Could not create event. Error: " + err});
+          res.json(500, {message: 'Could not create event. Error: ' + err});
         }
       
       });
       
-    } else if(!err) {
+   
       
-      // event is trying to create a event with a name that
-      // already exists.
-      res.json(403, {message: "event with that date already exists, please update instead of create or create a new event with a different email address."});
-      
-    } else {
-      res.json(500, { message: err});
-    }
-  });
-      
-}
-
+};
 
 
 
