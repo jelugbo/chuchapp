@@ -10,6 +10,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
 var cors = require('cors');// Handler to permit Access-Control-Allow-Origin
+var braintree = require('braintree');
+
+
+var gateway = braintree.connect({
+  environment: braintree.Environment.Sandbox,
+  merchantId: "xycp8rk96scpf7z6",
+  publicKey: "5zck8cxfbjdfhxvh",
+  privateKey: "2f80be8142ab4686c1a1ead92f4ca599"
+});
 
 
 var mongoose = require('mongoose');
@@ -154,8 +163,33 @@ app.use('/upload', function(req, res, next){
 });
 
 
+app.get('/payment', function (req, res){
+    res.render("braintree.ejs");
+});
 
+app.post("/create_customer", function (req, res) {
+  var customerRequest = {
+    firstName: req.body.first_name,
+    lastName: req.body.last_name,
+    creditCard: {
+      number: req.body.number,
+      cvv: req.body.cvv,
+      expirationMonth: req.body.month,
+      expirationYear: req.body.year,
+      billingAddress: {
+        postalCode: req.body.postal_code
+      }
+    }
+  };
 
+  gateway.customer.create(customerRequest, function (err, result) {
+    if (result.success) {
+      res.send("<h1>Customer created with name: " + result.customer.firstName + " " + result.customer.lastName + "</h1>");
+    } else {
+      res.send("<h1>Error: " + result.message + "</h1>");
+    }
+  });
+});
 
 
 /// catch 404 and forwarding to error handler
