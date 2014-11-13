@@ -7,7 +7,10 @@ var eventSchema = new Schema({
    
   eventName: {type:String, required:true}
   ,venue: {type: String , required:true}
+  ,venueLong: {type:String, required:false}
+  ,venueLat: {type:String, required:false}
   ,date: {type:Date , required:true}
+  ,reminderDate: {type:Date , required:false}
   ,dateDay: {type:String , required: false }
   ,dateMonth: {type:String , required: false }
   ,dateYear: {type:String , required: false }

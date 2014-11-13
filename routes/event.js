@@ -15,8 +15,17 @@ exports.create = function(req, res) {
   
 
       var EventEventName = req.body.EventEventName; 
-      var EventVenue = req.body.EventVenue; 
-      var EventDate = req.body.EventDate; 
+      var EventVenue = req.body.EventVenue;
+      var EventVenueLong = req.body.EventVenueLong;
+      var EventVenueLat = req.body.EventVenueLat;
+      var EventDate = req.body.EventDate;
+      var myReminderTime = new Date(req.body.EventReminderTime);
+      var myReminderDate = new Date(req.body.EventReminderDate); 
+      // console.log('req.body.EventReminderTime: ' + req.body.EventReminderTime)
+      //  console.log ('myReminderTime:'  + myReminderTime);
+      // console.log ('myReminderDate:'  + myReminderDate);
+      // var EventReminderDate = new Date (myReminderDate.getFullYear(),myReminderDate.getMonth()+1,myReminderDate.getDate() , myReminderDate.getUTCHours(), myReminderDate.getUTCMinutes(), '0','0');
+      var EventReminderDate = new Date (req.body.EventReminderDate);
       var myDate = new Date(EventDate);
       var EventDateDay = myDate.getDate();
       var EventDateMonth =myDate.getMonth()+ 1;
@@ -37,7 +46,10 @@ exports.create = function(req, res) {
       
       newevent.eventName = EventEventName;
       newevent.venue = EventVenue;
+      newevent.venueLong = EventVenueLong;
+      newevent.venueLat= EventVenueLat;
       newevent.date = EventDate;
+      newevent.reminderDate=EventReminderDate;
       newevent.imageURl = EventImageUrl;
       newevent.dateDay = EventDateDay;
       newevent.dateMonth = EventDateMonth;
