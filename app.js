@@ -29,6 +29,8 @@ var upload = require('jquery-file-upload-middleware');
 
 var routes = require('./routes');
 var users = require('./routes/user');
+var comments = require('./routes/comment');
+var appointments = require('./routes/appointment');
 var events = require('./routes/event');
 
 var app = express();
@@ -97,8 +99,13 @@ app.get('/users', users.index);
 app.get('/users/:id',users.show);
 app.get('/userByEmail/:emailAddress',users.userByEmail);
 app.get('/userProfile/:emailAddress',users.userProfile);
+app.get('/comments', comments.index);
+app.get('/appointment', appointments.index);
 
 app.post('/user', users.create);
+app.post('/comment', comments.create);
+app.post('/appointment', appointments.create);
+
 app.post ('/auth' , users.auth);
 
 app.del('/users',users.delete);
@@ -116,6 +123,7 @@ app.get('/events', events.index);
 app.get('/events/:id',events.show);
 app.post('/event', events.create);
 app.del('/events', events.delete);
+app.del('/eventsAll', events.deleteAll);
 app.put('/events', events.update);
 
 

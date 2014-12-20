@@ -13,22 +13,34 @@ exports.index = function(req, res) {
 
 exports.create = function(req, res) {
   
+      // var EventDate = new Date();
 
       var EventEventName = req.body.EventEventName; 
       var EventVenue = req.body.EventVenue;
       var EventVenueLong = req.body.EventVenueLong;
       var EventVenueLat = req.body.EventVenueLat;
       var EventDate = req.body.EventDate;
+      console.log('req.body.EventDate:' + req.body.EventDate);
+      console.log('EventDate:' + EventDate);
       var myReminderTime = new Date(req.body.EventReminderTime);
       var myReminderDate = new Date(req.body.EventReminderDate); 
       // console.log('req.body.EventReminderTime: ' + req.body.EventReminderTime)
-      //  console.log ('myReminderTime:'  + myReminderTime);
+      // console.log ('myReminderTime:'  + myReminderTime);
       // console.log ('myReminderDate:'  + myReminderDate);
       // var EventReminderDate = new Date (myReminderDate.getFullYear(),myReminderDate.getMonth()+1,myReminderDate.getDate() , myReminderDate.getUTCHours(), myReminderDate.getUTCMinutes(), '0','0');
       var EventReminderDate = new Date (req.body.EventReminderDate);
       var myDate = new Date(EventDate);
-      var EventDateDay = myDate.getDate();
-      var EventDateMonth =myDate.getMonth()+ 1;
+
+      console.log(myDate);
+      
+      var EventDateDay = myDate.getUTCDate();
+      if (EventDateDay ==1){
+        var EventDateMonth =myDate.getMonth()+ 2;
+      }
+      else{
+       var EventDateMonth =myDate.getMonth()+ 1; 
+      }
+      
       var EventDateYear =myDate.getFullYear();
       var EventImageUrl = req.body.EventImageUrl; 
       var EventDescription1 = req.body.EventDescription1;
@@ -111,6 +123,21 @@ exports.delete = function(req, res) {
   });
 }
 
+
+exports.deleteAll = function(req, res) {
+      
+  var myYear = req.body.year;
+  event.find({dateYear: myYear }, function(err, doc) {
+    if(!err && doc) {
+      doc.remove({dateYear: myYear });
+      res.json(200, { message: "Workout removed."});
+    } else if(!err) {
+      res.json(404, { message: "Could not find Event."});
+    } else {
+      res.json(403, {message: "Could not delete Event. " + err});
+    }
+  });
+}
 
 
 // exports.delete = function(req, res) {
