@@ -111,6 +111,8 @@ exports.show = function(req, res) {
 exports.delete = function(req, res) {
       
   var id = req.body.id;
+  console.log("I got to this stage");
+  
   event.findById(id, function(err, doc) {
     if(!err && doc) {
       doc.remove();
@@ -167,7 +169,7 @@ exports.update = function(req, res) {
   
   var id = req.body.event_id;
 
-   var EventEventName = req.body.EventEventName; 
+      var EventEventName = req.body.EventEventName; 
       var EventVenue = req.body.EventVenue;
       var EventVenueLong = req.body.EventVenueLong;
       var EventVenueLat = req.body.EventVenueLat;
@@ -200,11 +202,6 @@ exports.update = function(req, res) {
       var EventDescription3 = req.body.EventDescription3;
       var EventEnquiryContact = req.body.EventEnquiryContact;
       // var EventTime = req.body.EventTime;
-
-      console.log ( 'Event day is ' + EventDateDay);
-      console.log ( 'Event Month is ' + EventDateMonth);
-      console.log ( 'Event Year is ' + EventDateYear);
-   
 
       // var newevent = new event();
       
@@ -245,7 +242,7 @@ exports.update = function(req, res) {
         doc.save(function(err) {
           if(!err) {
             res.json(200, {message: "event updated: " +
-event_event_name});
+EventEventName});
           } else {
             res.json(500, {message: "Could not update event. " +
 err});
