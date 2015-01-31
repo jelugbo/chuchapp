@@ -11,6 +11,36 @@ exports.index = function(req, res) {
 }
 
 
+exports.pushNotification = function(req, res) {
+
+
+var dateOffset = (24*60*60*1000) * 5; //5 days
+var myDate = new Date();
+var myDate2 = new Date();
+var start1 = myDate.setTime(myDate.getTime() - dateOffset);
+var end1 = myDate2.setTime(myDate2.getTime() + dateOffset);
+var start = new Date(start1).toISOString();
+var end = new Date(end1).toISOString();
+
+
+console.log('start' + start);
+console.log ('end' + end );
+
+var now = new Date();
+
+console.log (' start in iso format ' +  new Date(start1).toISOString() )
+
+  event.find({date: {$lt: end , $gte: start}}, function(err, docs) {
+    if(!err) {
+      res.json(200, { event: docs });
+    } else {
+      res.json(500, { message: err });
+    }
+  });
+}
+
+
+
 exports.create = function(req, res) {
   
       // var EventDate = new Date();

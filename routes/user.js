@@ -1,4 +1,7 @@
 var user = require('../models/user').user;
+var role = require('../models/role').role;
+
+
 var nodemailer = require('nodemailer');
 var cc = require('coupon-code');
       
@@ -73,7 +76,10 @@ exports.index = function(req, res) {
 
       };
 
+
  
+
+
 
 
 exports.create = function(req, res) {
@@ -84,47 +90,138 @@ exports.create = function(req, res) {
   var user_password = req.body.user_password;
   var verificationCode = cc.generate({ parts : 2 });
 
-user.findOne({ email_address: { $regex: new RegExp(user_email_address, "i") } },
-function(err, doc) { // Using RegEx - search is case insensitive
-    if(!err && !doc) {
-      
-      var newuser = new user();
-      
-      newuser.first_name = user_first_name;
-      newuser.last_name = user_last_name;
-      newuser.email_address = user_email_address;
-      newuser.password = user_password;
-      newuser.resetCode =  cc.generate({ parts : 2 });
-      newuser.verificationCode = verificationCode;
+ role.findOne({ email_address: { $regex: new RegExp(user_email_address, "i") } },
+ function(err, doc) { // Using RegEx - search is case insensitive
+         
+            if(err && !doc) {
+             res.json(500, {message: user_email_address + 'is not Permited to use the control panel. error detected is :'  + err});
+              } 
+              else if (!err && doc) {
 
-      
-      newuser.save(function(err) {
-       
-        if(!err) {
-          res.json(201, {message: "user created with email_address: " +
-newuser.email_address });
-          sendMail(user_email_address , user_first_name , verificationCode);
+                                  // Start
 
-        } else {
-          res.json(500, {message: "Could not create user. Error: " + err});
-        }
-      
-      });
-      
-    } else if(!err) {
-      
-      // User is trying to create a user with a name that
-      // already exists.
-      res.json(403, {message: "user with that email address already exists, please update instead of create or create a new user with a different email address."});
-   
-    } else {
-      res.json(500, { message: err});
-    }
-  });
+                                user.findOne({ email_address: { $regex: new RegExp(user_email_address, "i") } },
+                                function(err, doc) { // Using RegEx - search is case insensitive
+                                    if(!err && !doc) {
+                                      
+                                      var newuser = new user();
+                                      
+                                      newuser.first_name = user_first_name;
+                                      newuser.last_name = user_last_name;
+                                      newuser.email_address = user_email_address;
+                                      newuser.password = user_password;
+                                      newuser.resetCode =  cc.generate({ parts : 2 });
+                                      newuser.verificationCode = verificationCode;
+
+                                      newuser.save(function(err) {
+                                       
+                                        if(!err) {
+                                          res.json(201, {message: "user created with email_address: " + newuser.email_address });
+                                          sendMail(user_email_address , user_first_name , verificationCode);
+
+                                        } else {
+                                          res.json(500, {message: "Could not create user. Error: " + err});
+                                        }
+                                      
+                                      });
+
+                         
+                                    } else if(!err) {
+                                      
+                                      // User is trying to create a user with a name that
+                                      // already exists.
+                                      res.json(403, {message: "user with that email address already exists, please update instead of create or create a new user with a different email address."});
+                                   
+                                    } else {
+                                      res.json(500, { message: err});
+                                    }
+                                  });
+
+                                // Ends
+     }else
+              {
+                res.json(500, {message: user_email_address + 'is not Permited to use the control panel. error detected is :'  + err});
+                
+              }
+    });
       
 }
 
 
+
+// function checkPermission ( ){
+//     var Permited ;
+//   return function (user_email_address){
+    
+
+//  role.findOne({ email_address: { $regex: new RegExp(user_email_address, "i") } },
+//  function(err, doc) { // Using RegEx - search is case insensitive
+         
+//             if(err && !doc) {
+//               Permited = false;
+//               console.log(user_email_address + " is not Permited "+ " err is " + err);
+//               } 
+//               else if (!err && doc) {
+//                 console.log(user_email_address + " is Permited");
+//               Permited = true;
+//               checkPermission = true;
+//               }else
+//               {
+//                 Permited = false;
+//                 console.log ("err is " + err);
+                
+//               }
+//     });
+
+
+  
+//     if (Permited == true )
+//     {
+//       console.log("Permited is " + Permited);
+//       return true;
+//     }else{
+//       console.log("Permited is " + Permited);
+//       return false;
+//     }
+
+//   }
+            
+//   }
+
+exports.permission = function(req, res) {
+      
+ var user_email_address = req.params.emailAddress;
+ 
+
+
+
+role.findOne({ email_address: user_email_address },
+function(err, doc) { // Using RegEx - search is case insensitive
+
+ if(!err && doc && !(doc.blocked == true)) {
+      res.json(200,  {  canViewEventList: doc.canViewEventList
+                        ,canEditEvent: doc.canEditEvent
+                        ,canDeleteEvent: doc.canDeleteEvent
+                        ,canSendInvites: doc.canSendInvites
+                        ,canBlockUsers: doc.canBlockUsers
+                        ,canDeleteUser: doc.canDeleteUser
+                      });
+      }
+      // else if (doc.blocked == true)
+      //   {
+      //     res.json(203, { message: "Sorry your accound has been block."});
+      //   }
+  else if(err) {
+      res.json(500, { message: "Error loading user." + err});
+    } else {
+      res.json(404, { message: "user not found."});
+      res.json(404, doc);
+    }
+ // });
+
+  });
+      
+}
 
 exports.auth = function(req, res) {
       

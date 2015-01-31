@@ -13,6 +13,7 @@ var cors = require('cors');// Handler to permit Access-Control-Allow-Origin
 var braintree = require('braintree');
 
 
+
 var gateway = braintree.connect({
   environment: braintree.Environment.Sandbox,
   merchantId: "xycp8rk96scpf7z6",
@@ -32,6 +33,8 @@ var users = require('./routes/user');
 var comments = require('./routes/comment');
 var appointments = require('./routes/appointment');
 var events = require('./routes/event');
+var roles = require('./routes/role');
+var department = require('./routes/department');
 
 var app = express();
 app.use(cors());
@@ -76,6 +79,8 @@ mongoose.connection.once('connected', function() {
 });
 
 
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -91,43 +96,65 @@ app.use(app.router);
 app.use('/upload', upload.fileHandler());
 
 
+// CRUD Invocation
+
+        // Create Data
+          app.post('/user', users.create);
+          app.post('/comment', comments.create);
+          app.post('/appointment', appointments.create);
+          app.post('/role', roles.create);
+          app.post('/department', department.create)
+          app.post('/event', events.create);
+          app.post ('/auth' , users.auth);
+        // End of Create Data
+
+        // Read Data
+          app.get('/', routes.index);
+          app.get('/users', users.index);
+          app.get('/users/:id',users.show);
+          app.get('/userByEmail/:emailAddress',users.userByEmail);
+          app.get('/userProfile/:emailAddress',users.userProfile);
+          app.get('/comments', comments.index);
+          app.get('/appointment', appointments.index);
+          app.get('/roles', roles.index);
+          app.get ('/permission/:emailAddress' , users.permission);
+          app.get('/pushNotification', events.pushNotification);
+          app.get('/department',department.index);
+          app.get('/events', events.index);
+          app.get('/events/:id',events.show);
+          app.get('/sessionFinder/:id',users.sfinder);
+        // End OF Read
+
+        // Update Data
+          app.put('/users', users.update);
+          app.put('/updateProfile1', users.updateProfile1);
+          app.put('/updateProfile2', users.updateProfile2);
+          app.put('/verify',users.verify);
+          app.put('/ResendVerificationCode',users.ResendVerificationCode);
+          app.put('/ResetPassCode',users.ResetPassCode);
+          app.put('/changepassword',users.changepassword);
+          app.put('/role', roles.update);
+          app.put('/events', events.update);
+          app.put('/department', department.update);
+        // End of Udate Data
+
+        // Delete Data
+          app.del('/users',users.delete);
+          app.del('/events', events.delete);
+          app.del('/eventsAll', events.deleteAll);
+          app.del('/department',department.delete);
+        // End of Delete Data
 
 
-app.get('/', routes.index);
-// app.get('/users', users.list);
-app.get('/users', users.index);
-app.get('/users/:id',users.show);
-app.get('/userByEmail/:emailAddress',users.userByEmail);
-app.get('/userProfile/:emailAddress',users.userProfile);
-app.get('/comments', comments.index);
-app.get('/appointment', appointments.index);
-
-app.post('/user', users.create);
-app.post('/comment', comments.create);
-app.post('/appointment', appointments.create);
-
-app.post ('/auth' , users.auth);
-
-app.del('/users',users.delete);
-
-app.put('/users', users.update);
-app.put('/updateProfile1', users.updateProfile1);
-app.put('/updateProfile2', users.updateProfile2);
-app.put('/verify',users.verify);
-app.put('/ResendVerificationCode',users.ResendVerificationCode);
-app.put('/ResetPassCode',users.ResetPassCode);
-app.put('/changepassword',users.changepassword);
-// event Section
-
-app.get('/events', events.index);
-app.get('/events/:id',events.show);
-app.post('/event', events.create);
-app.del('/events', events.delete);
-app.del('/eventsAll', events.deleteAll);
-app.put('/events', events.update);
+// End of CRUD Invocation
 
 
-app.get('/sessionFinder/:id',users.sfinder);
+
+
+
+
+
+
 
 
 
