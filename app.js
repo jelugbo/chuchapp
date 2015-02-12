@@ -32,9 +32,12 @@ var routes = require('./routes');
 var users = require('./routes/user');
 var comments = require('./routes/comment');
 var appointments = require('./routes/appointment');
+var connections = require('./routes/connect');
 var events = require('./routes/event');
+var news = require('./routes/news');
 var roles = require('./routes/role');
 var department = require('./routes/department');
+var devotions = require('./routes/devotion');
 
 var app = express();
 app.use(cors());
@@ -102,10 +105,14 @@ app.use('/upload', upload.fileHandler());
           app.post('/user', users.create);
           app.post('/comment', comments.create);
           app.post('/appointment', appointments.create);
+          app.post('/connect', connections.create);
           app.post('/role', roles.create);
           app.post('/department', department.create)
           app.post('/event', events.create);
+          app.post('/news', news.create);
+          app.post('/newsAndImage', news.newsWithImage);
           app.post ('/auth' , users.auth);
+          app.post('/devotion', devotions.create);
         // End of Create Data
 
         // Read Data
@@ -121,8 +128,10 @@ app.use('/upload', upload.fileHandler());
           app.get('/pushNotification', events.pushNotification);
           app.get('/department',department.index);
           app.get('/events', events.index);
+          app.get('/news', news.index);
           app.get('/events/:id',events.show);
           app.get('/sessionFinder/:id',users.sfinder);
+          app.get('/devotion', devotions.index);
         // End OF Read
 
         // Update Data
@@ -143,6 +152,7 @@ app.use('/upload', upload.fileHandler());
           app.del('/events', events.delete);
           app.del('/eventsAll', events.deleteAll);
           app.del('/department',department.delete);
+          // app.del('/news',news.delete);
         // End of Delete Data
 
 
@@ -172,19 +182,45 @@ app.use('/upload', upload.fileHandler());
 /// Redirect all to home except post
 app.get('/upload', function( req, res ){
     res.redirect('/');
+    
+    
 });
 
 // app.post('/upload', function( req, res ){
-//     res.redirect('/');
+//     // res.redirect('/');
+//   console.log (req.body.fileDescription);
+//     res.json(201, {message: 'image uploaded' + req.body.fileDescription });
 // });
 
 app.put('/upload', function( req, res ){
+
     res.redirect('/');
+
 });
 
 app.delete('/upload', function( req, res ){
     res.redirect('/');
+
+    // console.log(req.body.actionType);
+    // if (req.body.actionType =='DeleteNews'){
+    //     news.delete(req , res);
+    //     console.log('worked')
+    //   }
+
 });
+
+app.delete('/news', function( req, res ){
+    // res.redirect('/');\
+
+    console.log(req.body.actionType);
+    if (req.body.actionType =='DeleteNews'){
+        news.delete(req , res , __dirname);
+        console.log('worked')
+      }
+
+});
+
+
 
 app.use('/upload', function(req, res, next){
     upload.fileHandler({
@@ -196,6 +232,30 @@ app.use('/upload', function(req, res, next){
         }
     })(req, res, next);
 });
+
+// app.use('/list', function (req, res, next) {
+//             upload.fileManager({
+//                 uploadDir: function () {
+//                     return __dirname + '/public/uploads/' + req.sessionID
+//                 },
+//                 uploadUrl: function () {
+//                     return '/uploads/' + req.sessionID
+//                 }
+//             }).getFiles(function (files) {
+//                 res.json(files);
+//             });
+//         });
+
+
+
+upload.on('end', function (fileInfo, req, res) { 
+  // console.log (fileInfo);
+  // console.log (req);
+  if (req.fields.actionType =='newsWithImage'){
+        news.newsImage(fileInfo,req , res);
+        console.log('worked')
+      }
+   });
 
 
 app.get('/payment', function (req, res){
