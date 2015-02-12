@@ -115,9 +115,9 @@ exports.index = function(req, res) {
         var mailContent = {
             from: 'no.reply.harrisconsult@gmail.com',
             to: emailAddress,
-            subject: 'password Reset Code',
+            subject: 'RCCG TKP appointment',
             text: 'Your Appointment with pator',
-            html: 'Hello ' + username + ' , <br/> Thank you for leaving your feedback. <br> Your appointment will be view and we will get back to you.'
+            html: 'Hello ' + username + ' , <br/> Thank you for connecting with us. <br> Your appointment will be view and we will get back to you.'
         };
 
         transporter.sendMail( mailContent, function(error, info){
