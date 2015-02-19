@@ -37,7 +37,10 @@ var events = require('./routes/event');
 var news = require('./routes/news');
 var roles = require('./routes/role');
 var department = require('./routes/department');
+var cellgroup = require('./routes/cellgroup');
+var group = require('./routes/group');
 var devotions = require('./routes/devotion');
+var ministry = require('./routes/ministry')
 
 var app = express();
 app.use(cors());
@@ -108,11 +111,14 @@ app.use('/upload', upload.fileHandler());
           app.post('/connect', connections.create);
           app.post('/role', roles.create);
           app.post('/department', department.create)
+          app.post('/cellgroup', cellgroup.create)
+          app.post('/group', group.create)
           app.post('/event', events.create);
           app.post('/news', news.create);
           app.post('/newsAndImage', news.newsWithImage);
           app.post ('/auth' , users.auth);
           app.post('/devotion', devotions.create);
+          app.post('/ministry',ministry.create);
         // End of Create Data
 
         // Read Data
@@ -127,11 +133,14 @@ app.use('/upload', upload.fileHandler());
           app.get ('/permission/:emailAddress' , users.permission);
           app.get('/pushNotification', events.pushNotification);
           app.get('/department',department.index);
+          app.get('/cellgroup',cellgroup.index);
+          app.get('/group',group.index);
           app.get('/events', events.index);
           app.get('/news', news.index);
           app.get('/events/:id',events.show);
           app.get('/sessionFinder/:id',users.sfinder);
           app.get('/devotion', devotions.index);
+          app.get('/ministry',ministry.index)
         // End OF Read
 
         // Update Data
@@ -152,6 +161,8 @@ app.use('/upload', upload.fileHandler());
           app.del('/events', events.delete);
           app.del('/eventsAll', events.deleteAll);
           app.del('/department',department.delete);
+          app.del('/group',group.delete);
+          app.del('ministry',ministry.delete);
           // app.del('/news',news.delete);
         // End of Delete Data
 
