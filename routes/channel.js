@@ -1,14 +1,14 @@
 
-var ministry = require('../models/ministry').ministry
+var channel = require('../models/channel').channel
 
 
 var nodemailer = require('nodemailer');
 var cc = require('coupon-code');
       
 exports.index = function(req, res) {
-  ministry.find({}, function(err, docs) {
+  channel.find({}, function(err, docs) {
     if(!err) {
-      res.json(200, { ministries: docs });
+      res.json(200, { channels: docs });
     } else {
       res.json(500, { message: err });
     }
@@ -79,33 +79,31 @@ exports.index = function(req, res) {
 
 exports.create = function(req, res) {
       
-  var ministry_Name = req.body.ministryName; // First name of user.
-  var ministry_Head= req.body.ministryHead;
-  var ministry_Email_Address = req.body.ministryEmailAddress; 
-  var ministry_Contact = req.body.ministryContact;
+  var channel_Name = req.body.channelName; // First name of user.
+  var channel_enabled = req.body.channelEnabled;
+  var channel_description = req.body.channelDescription;
 
     // Start
 
-            ministry.findOne({ ministryEmailAddress: { $regex: new RegExp(ministry_Email_Address, "i") } },
+            channel.findOne({ channelName: { $regex: new RegExp(channel_channelName, "i") } },
             function(err, doc) { // Using RegEx - search is case insensitive
                 if(!err && !doc) {
                   
-                  var newministry = new ministry();
+                  var newchannel = new channel();
                   
-                  newministry.ministryHead= ministry_Head;
-                  newministry.ministryName = ministry_Name;
-                  newministry.ministryEmailAddress = ministry_Email_Address;
-                  newministry.ministryContact = ministry_Contact;
+                  newchannel.channelName = channel_Name;
+                  newchannel.channelDescription.channel_description;
+                  newchannel.enabled = channel_enabled;
 
 
-                  newministry.save(function(err) {
+                  newchannel.save(function(err) {
                    
                     if(!err) {
-                      res.json(201, {message: "ministry created with email_address: " + newministry.email_address });
+                      res.json(201, {message: "channel created " });
                       // sendMail(user_email_address , user_first_name , verificationCode);
 
                     } else {
-                      res.json(500, {message: "Could not create ministry. Error: " + err});
+                      res.json(500, {message: "Could not create channel. Error: " + err});
                     }
                   
                   });
@@ -115,7 +113,7 @@ exports.create = function(req, res) {
                   
                   // User is trying to create a user with a name that
                   // already exists.
-                  res.json(403, {message: "ministry with that email address already exists, please update instead of create or create a new ministry with a different email address."});
+                  res.json(403, {message: "channel  already exists, please update instead of create or create a new channel with a different email address."});
                
                 } else {
                   res.json(500, { message: err});
@@ -125,6 +123,60 @@ exports.create = function(req, res) {
     // Ends
       
 }
+
+exports.createChannelWithImage = function(imagedata,req, res) {
+      
+  var channel_Name = req.fields.channelName; // First name of user.
+  var channel_enabled = req.fields.channelEnabled;
+  var channel_Date = req.fields.channelDate;
+  var channel_description = req.fields.channelDescription;
+  // var channel_imageURL = imagedata.url;
+  // var channel_imageName = imagedata.name;
+
+    // Start
+
+            channel.findOne({ channelName: { $regex: new RegExp(channel_Name, "i") } },
+            function(err, doc) { // Using RegEx - search is case insensitive
+                if(!err && !doc) {
+                  
+                  var newchannel = new channel();
+                  
+                  newchannel.channelName = channel_Name;
+                  newchannel.date = channel_Date;
+                  newchannel.channelDescription = channel_description;
+                  newchannel.enabled = channel_enabled;
+                  newchannel.imageURL = imagedata.url;
+                  newchannel.imageName =imagedata.name;
+
+
+                  newchannel.save(function(err) {
+                   
+                    if(!err) {
+                      res.json(201, {message: "channel created " });
+                      // sendMail(user_email_address , user_first_name , verificationCode);
+
+                    } else {
+                      res.json(500, {message: "Could not create channel. Error: " + err});
+                    }
+                  
+                  });
+
+     
+                } else if(!err) {
+                  
+                  // User is trying to create a user with a name that
+                  // already exists.
+                  res.json(403, {message: "channel  already exists, please update instead of create or create a new channel with a different email address."});
+               
+                } else {
+                  res.json(500, { message: err});
+                }
+              });
+
+    // Ends
+      
+}
+
 
 
 
@@ -169,48 +221,45 @@ exports.userByEmail = function(req, res) {
 exports.delete = function(req, res) {
       
   var id = req.body.id;
-  ministry.findById(id, function(err, doc) {
+  channel.findById(id, function(err, doc) {
     if(!err && doc) {
       doc.remove();
-      console.log ("Deleted");
-      res.json(200, { message: "ministry removed."});
+      res.json(200, { message: "channel removed."});
     } else if(!err) {
-      res.json(404, { message: "Could not find ministry."});
+      res.json(404, { message: "Could not find channel."});
     } else {
-      res.json(403, {message: "Could not delete ministry. " + err});
+      res.json(403, {message: "Could not delete channel. " + err});
     }
   });
 }
 
 exports.update = function(req, res) {
   
-  var id = req.body.ministryId;
+  var id = req.body.id;
 
-  var ministry_Name = req.body.ministryName; // First name of user.
-  var ministry_Head= req.body.ministryHead;
-  var ministry_Email_Address = req.body.ministryEmailAddress; 
-  var ministry_Contact = req.body.ministryContact;
+  var channel_Name = req.body.channel_Name; // First name of user.
+  var channel_Email_Address = req.body.channel_email_address; 
+  var channel_Contact = req.body.channel_Contact;
       
-  ministry.findById(id, function(err, doc) {
+  channel.findById(id, function(err, doc) {
       if(!err && doc) {
-        doc.ministryName = ministry_Name;
-        doc.ministryHead = ministry_Head;
-        doc.ministryEmailAddress = ministry_Email_Address;
-        doc.ministryContact = ministry_Contact;
+        doc.channelName = channel_Name;
+        doc.channelEmailAddress = user_last_name;
+        doc.channelContact = user_email_address;
         
         doc.save(function(err) {
           if(!err) {
-            res.json(200, {message: "ministry updated: " +
-ministry_Name});
+            res.json(200, {message: "channel updated: " +
+user_name});
           } else {
-            res.json(500, {message: "Could not update ministry. " +
+            res.json(500, {message: "Could not update channel. " +
 err});
           }
         });
       } else if(!err) {
-        res.json(404, { message: "Could not find ministry."});
+        res.json(404, { message: "Could not find channel."});
       } else {
-        res.json(500, { message: "Could not update ministry. " +
+        res.json(500, { message: "Could not update channel. " +
 err});
       }
     });

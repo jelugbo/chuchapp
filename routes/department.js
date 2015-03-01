@@ -80,6 +80,7 @@ exports.index = function(req, res) {
 exports.create = function(req, res) {
       
   var department_Name = req.body.departmentName; // First name of user.
+  var department_Head = req.body.departmentHead; // First name of user.
   var department_Email_Address = req.body.departmrntEmailAddress; 
   var department_Contact = req.body.departmentContact;
 
@@ -92,6 +93,7 @@ exports.create = function(req, res) {
                   var newDepartment = new department();
                   
                   newDepartment.departmentName = department_Name;
+                  newDepartment.departmentHead = department_Head;
                   newDepartment.departmentEmailAddress = department_Email_Address;
                   newDepartment.departmentContact = department_Contact;
 
@@ -181,22 +183,24 @@ exports.delete = function(req, res) {
 
 exports.update = function(req, res) {
   
-  var id = req.body.id;
+  var id = req.body.departmentId;
 
-  var department_Name = req.body.department_Name; // First name of user.
-  var department_Email_Address = req.body.department_email_address; 
-  var department_Contact = req.body.department_Contact;
+  var department_Name = req.body.departmentName; // First name of user.
+  var department_Head = req.body.departmentHead;
+  var department_Email_Address = req.body.departmrntEmailAddress; 
+  var department_Contact = req.body.departmentContact;
       
   department.findById(id, function(err, doc) {
       if(!err && doc) {
+        doc.departmentHead = department_Head
         doc.departmentName = department_Name;
-        doc.departmentEmailAddress = user_last_name;
-        doc.departmentContact = user_email_address;
+        doc.departmentEmailAddress = department_Email_Address;
+        doc.departmentContact = department_Contact;
         
         doc.save(function(err) {
           if(!err) {
             res.json(200, {message: "department updated: " +
-user_name});
+department_Name});
           } else {
             res.json(500, {message: "Could not update department. " +
 err});

@@ -80,6 +80,7 @@ exports.index = function(req, res) {
 exports.create = function(req, res) {
       
   var cellgroup_Name = req.body.cellgroupName; // First name of user.
+  var cellgroup_Head = req.body.cellgroupHead;
   var cellgroup_Email_Address = req.body.cellgroupEmailAddress; 
   var cellgroup_Contact = req.body.cellgroupContact;
 
@@ -92,6 +93,7 @@ exports.create = function(req, res) {
                   var newcellgroup = new cellgroup();
                   
                   newcellgroup.cellgroupName = cellgroup_Name;
+                  newcellgroup.cellgroupHead = cellgroup_Head;
                   newcellgroup.cellgroupEmailAddress = cellgroup_Email_Address;
                   newcellgroup.cellgroupContact = cellgroup_Contact;
 
@@ -181,22 +183,24 @@ exports.delete = function(req, res) {
 
 exports.update = function(req, res) {
   
-  var id = req.body.id;
+  var id = req.body.cellgroupId;
 
-  var cellgroup_Name = req.body.cellgroup_Name; // First name of user.
-  var cellgroup_Email_Address = req.body.cellgroup_email_address; 
-  var cellgroup_Contact = req.body.cellgroup_Contact;
+  var cellgroup_Name = req.body.cellgroupName; // First name of user.
+  var cellgroup_Head = req.body.cellgroupHead;
+  var cellgroup_Email_Address = req.body.cellgroupEmailAddress; 
+  var cellgroup_Contact = req.body.cellgroupContact;
       
   cellgroup.findById(id, function(err, doc) {
       if(!err && doc) {
         doc.cellgroupName = cellgroup_Name;
-        doc.cellgroupEmailAddress = user_last_name;
-        doc.cellgroupContact = user_email_address;
+        doc.cellgroupHead = cellgroup_Head;
+        doc.cellgroupEmailAddress = cellgroup_Email_Address;
+        doc.cellgroupContact = cellgroup_Contact;
         
         doc.save(function(err) {
           if(!err) {
             res.json(200, {message: "cellgroup updated: " +
-user_name});
+cellgroup_Name});
           } else {
             res.json(500, {message: "Could not update cellgroup. " +
 err});

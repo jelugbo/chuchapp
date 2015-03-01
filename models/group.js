@@ -7,6 +7,7 @@ var groupSchema = new Schema({
 
   groupName : { type: String, required: true, trim: true,
   index: { unique: true } }
+  ,groupHead: {type:String}
   ,groupEmailAddress: {type:String, required:true}
   ,groupContact: {type:String, required:false}
 

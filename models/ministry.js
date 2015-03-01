@@ -7,6 +7,7 @@ var ministrySchema = new Schema({
 
   ministryName : { type: String, required: true, trim: true,
   index: { unique: true } }
+  ,ministryHead: {type: String}
   ,ministryEmailAddress: {type:String, required:true}
   ,ministryContact: {type:String, required:false}
 

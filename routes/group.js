@@ -80,6 +80,7 @@ exports.index = function(req, res) {
 exports.create = function(req, res) {
       
   var group_Name = req.body.groupName; // First name of user.
+  var group_Head = req.body.groupHead;
   var group_Email_Address = req.body.groupEmailAddress; 
   var group_Contact = req.body.groupContact;
 
@@ -91,6 +92,7 @@ exports.create = function(req, res) {
                   
                   var newgroup = new group();
                   
+                  newgroup.groupHead = group_Head;
                   newgroup.groupName = group_Name;
                   newgroup.groupEmailAddress = group_Email_Address;
                   newgroup.groupContact = group_Contact;
@@ -181,22 +183,25 @@ exports.delete = function(req, res) {
 
 exports.update = function(req, res) {
   
-  var id = req.body.id;
+  var id = req.body.goupId;
 
-  var group_Name = req.body.group_Name; // First name of user.
-  var group_Email_Address = req.body.group_email_address; 
-  var group_Contact = req.body.group_Contact;
+  var group_Name = req.body.groupName; // First name of user.
+  var group_Head = req.body.groupHead;
+  var group_Email_Address = req.body.groupEmailAddress; 
+  var group_Contact = req.body.groupContact;
       
   group.findById(id, function(err, doc) {
       if(!err && doc) {
+
         doc.groupName = group_Name;
-        doc.groupEmailAddress = user_last_name;
-        doc.groupContact = user_email_address;
+        doc.groupHead = group_Head;
+        doc.groupEmailAddress = group_Email_Address;
+        doc.groupContact = group_Contact;
         
         doc.save(function(err) {
           if(!err) {
             res.json(200, {message: "group updated: " +
-user_name});
+group_Name});
           } else {
             res.json(500, {message: "Could not update group. " +
 err});

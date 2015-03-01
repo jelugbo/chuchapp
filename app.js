@@ -35,12 +35,15 @@ var appointments = require('./routes/appointment');
 var connections = require('./routes/connect');
 var events = require('./routes/event');
 var news = require('./routes/news');
+var media = require('./routes/media');
 var roles = require('./routes/role');
 var department = require('./routes/department');
+var channel = require('./routes/channel');
 var cellgroup = require('./routes/cellgroup');
 var group = require('./routes/group');
 var devotions = require('./routes/devotion');
 var ministry = require('./routes/ministry')
+var channel = require('./routes/channel');
 
 var app = express();
 app.use(cors());
@@ -111,6 +114,7 @@ app.use('/upload', upload.fileHandler());
           app.post('/connect', connections.create);
           app.post('/role', roles.create);
           app.post('/department', department.create)
+          app.post('/channel', channel.create)
           app.post('/cellgroup', cellgroup.create)
           app.post('/group', group.create)
           app.post('/event', events.create);
@@ -119,6 +123,7 @@ app.use('/upload', upload.fileHandler());
           app.post ('/auth' , users.auth);
           app.post('/devotion', devotions.create);
           app.post('/ministry',ministry.create);
+
         // End of Create Data
 
         // Read Data
@@ -133,14 +138,18 @@ app.use('/upload', upload.fileHandler());
           app.get ('/permission/:emailAddress' , users.permission);
           app.get('/pushNotification', events.pushNotification);
           app.get('/department',department.index);
+          app.get('/channel',channel.index);
           app.get('/cellgroup',cellgroup.index);
           app.get('/group',group.index);
           app.get('/events', events.index);
           app.get('/news', news.index);
+          app.get('/media', media.index);
           app.get('/events/:id',events.show);
           app.get('/sessionFinder/:id',users.sfinder);
           app.get('/devotion', devotions.index);
-          app.get('/ministry',ministry.index)
+          app.get('/ministry',ministry.index);
+          app.get('/channel',channel.index);
+          app.get('/media/:channel',media.show);
         // End OF Read
 
         // Update Data
@@ -154,6 +163,8 @@ app.use('/upload', upload.fileHandler());
           app.put('/role', roles.update);
           app.put('/events', events.update);
           app.put('/department', department.update);
+          app.put('/ministry', ministry.update);
+          app.put('/group', group.update);
         // End of Udate Data
 
         // Delete Data
@@ -162,7 +173,7 @@ app.use('/upload', upload.fileHandler());
           app.del('/eventsAll', events.deleteAll);
           app.del('/department',department.delete);
           app.del('/group',group.delete);
-          app.del('ministry',ministry.delete);
+          app.del('/ministry',ministry.delete);
           // app.del('/news',news.delete);
         // End of Delete Data
 
@@ -231,6 +242,18 @@ app.delete('/news', function( req, res ){
 
 });
 
+app.delete('/media', function( req, res ){
+    // res.redirect('/');\
+
+    console.log(req.body.actionType);
+    if (req.body.actionType =='DeleteMedia'){
+        news.delete(req , res , __dirname);
+        console.log('worked')
+      }
+
+});
+
+
 
 
 app.use('/upload', function(req, res, next){
@@ -260,11 +283,22 @@ app.use('/upload', function(req, res, next){
 
 
 upload.on('end', function (fileInfo, req, res) { 
-  // console.log (fileInfo);
+  console.log (fileInfo);
   // console.log (req);
   if (req.fields.actionType =='newsWithImage'){
         news.newsImage(fileInfo,req , res);
-        console.log('worked')
+        console.log('saving news with image')
+      }else if(req.fields.actionType =='mediaWithImage'){
+        media.mediaImage(fileInfo,req , res);
+        console.log('Saving video information with image')
+      }else if(req.fields.actionType =='channelWithImage'){
+        try{
+          console.log (req.fields);
+        channel.createChannelWithImage(fileInfo,req , res);
+        console.log('Saving channel information with image')
+        }catch(err){
+          console.log(err);
+        }
       }
    });
 

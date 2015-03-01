@@ -7,6 +7,7 @@ var departmentSchema = new Schema({
 
   departmentName : { type: String, required: true, trim: true,
   index: { unique: true } }
+  ,departmentHead : {type:String}
   ,departmentEmailAddress: {type:String, required:true}
   ,departmentContact: {type:String, required:false}
 
